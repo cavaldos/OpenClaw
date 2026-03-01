@@ -8,6 +8,7 @@
  *
  * Modes:
  *   --all              Verify all verifiable signals and update Notion
+ *   --force            Force re-verification of already verified signals
  *   --dry-run          Verify all signals but don't update Notion (preview only)
  *   --id <pageId>      Verify a specific signal by Notion page ID
  *   --report           Show accuracy report from already-verified signals
@@ -25,6 +26,10 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '..
 const { getSignals, updateSignalVerification } = require('../../../../src/news-trade-db');
 const { verifySignal, verifySignals, generateReport } = require('../../../../src/verification/signalVerifier');
 const { isForexSymbol } = require('../../../../src/verification/priceChecker');
+
+function hasFlag(flag) {
+  return process.argv.includes(flag);
+}
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -77,13 +82,14 @@ async function cmdVerifyAll(dryRun = false) {
   // Filter signals that need verification:
   // - Have at least one forex symbol
   // - Not already verified (unless --force)
+  const force = hasFlag('--force');
   const toVerify = signals.filter(s => {
     const hasForex = (s.symbols || []).some(sym => isForexSymbol(sym));
     const alreadyVerified = /Verified|N\/A/i.test(s.verificationStatus || '');
-    return hasForex && !alreadyVerified;
+    return hasForex && (force || !alreadyVerified);
   });
 
-  console.log(`${toVerify.length} signals eligible for verification (have forex symbols, not yet verified).`);
+  console.log(`${toVerify.length} signals eligible for verification (have forex symbols${force ? ', including re-verify' : ', not yet verified'}).`);
 
   if (toVerify.length === 0) {
     console.log('Nothing to verify.');
@@ -323,10 +329,11 @@ const command = args[0];
 
 Usage:
   node verify-signals.js --all          Verify all eligible signals & update Notion
+  node verify-signals.js --force        Force re-verify already verified signals
   node verify-signals.js --dry-run      Verify all signals (preview, no Notion updates)
   node verify-signals.js --id <id>      Verify a specific signal by page ID
   node verify-signals.js --report       Full accuracy report with breakdowns
-  node verify-signals.js --stats        Quick verification status summary
+  node verify-signals.js --stats       Quick verification status summary
 
 Only forex pairs (EURUSD, GBPUSD, USDJPY, etc.) can be verified.
 Non-forex symbols (XAUUSD, US500, BTCUSD, etc.) are marked as N/A.`);

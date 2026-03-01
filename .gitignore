@@ -38,8 +38,9 @@ temp/
 Thumbs.db
 
 # Project specific
-.amp/
-.opencode/
+# .amp/
+# .opencode/
 
 # Data exports
 getdata/data/
+verification-data/
