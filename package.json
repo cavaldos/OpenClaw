@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "signals:dry-run": "node .agents/skills/news-trade-analysis/scripts/collect-signals.js --dry-run",
+    "signals:collect": "node .agents/skills/news-trade-analysis/scripts/collect-signals.js --save",
+    "signals:schedule": "node .agents/skills/news-trade-analysis/scripts/run-scheduler.js",
+    "signals:analyze": "node .agents/skills/news-trade-analysis/scripts/analyze-signals.js",
+    "signals:status": "node .agents/skills/news-trade-analysis/scripts/analyze-signals.js --status",
+    "signals:pending": "node .agents/skills/news-trade-analysis/scripts/analyze-signals.js --pending",
+    "signals:verify": "node .agents/skills/news-trade-analysis/scripts/verify-signals.js --all",
+    "signals:verify-dry": "node .agents/skills/news-trade-analysis/scripts/verify-signals.js --dry-run",
+    "signals:verify-report": "node .agents/skills/news-trade-analysis/scripts/verify-signals.js --report",
+    "signals:verify-stats": "node .agents/skills/news-trade-analysis/scripts/verify-signals.js --stats"
+  },
+  "dependencies": {
+    "@notionhq/client": "^5.9.0",
+    "axios": "^1.13.5",
+    "cheerio": "^1.2.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^17.3.1",
+    "node-schedule": "^2.1.1",
+    "rss-parser": "^3.13.0"
+  }
+}
